@@ -1,6 +1,9 @@
+import threading
 from datetime import datetime
 
 from contextlib import contextmanager
+from typing import Any
+
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict, MutableList
@@ -24,20 +27,37 @@ Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
 
-@contextmanager
-def session_maker(session=Session()):
-    try:
-        yield session
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+class SessionManager:
+    """
+    单例模式封装 session 的统一入口
+    """
+    _lock = threading.Lock()
+
+    def __new__(cls) -> Any:
+        if not hasattr(cls, '_instance'):
+            with SessionManager._lock:
+                if not hasattr(cls, '_instance'):
+                    cls._instance = super().__new__(cls)
+
+        return cls._instance
+
+    def __init__(self) -> None:
+        self.session = Session()
+
+    @contextmanager
+    def session_execute(self):
+        try:
+            yield self.session
+            self.session.commit()
+        except Exception:
+            self.session.rollback()
+            raise
+        finally:
+            self.session.close()
 
 
-class Users(Base):
-    __tablename__ = 'users'
+class UserInfo(Base):
+    __tablename__ = 'user_info'
 
     id = Column(Integer, primary_key=True)
     openId = Column(String(128), unique=True, nullable=False)
@@ -69,7 +89,7 @@ class Users(Base):
         return False
 
     def __repr__(self):
-        return f'>>> openId: {self.openId}, nickName: {self.nickName}'
+        return f'>>> nickName: {self.nickName}, openId: {self.openId}'
 
 
 def init_db():

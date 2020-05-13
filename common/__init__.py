@@ -6,7 +6,7 @@
 # CWD = os.getcwd()
 # BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 #
-# log_path = os.path.join(CWD, 'logs').replace('\\', '/')
+# log_path = os.path.join(CWD, 'logs/').replace('\\', '/')
 # os.mkdir(log_path) if not os.path.exists(log_path) else ''
 #
 # logger = logging.getLogger()

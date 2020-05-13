@@ -2,7 +2,7 @@ import re
 import time
 from datetime import datetime, timedelta
 
-from common import logger
+# from common import logger
 from sqlalchemy.orm import class_mapper
 
 
@@ -48,10 +48,9 @@ def object_to_list(obj):
     return data
 
 
-def hour_range(
-        start_date=datetime.today().strftime("%Y-%m-%d") + ' 00',
-        end_date=(datetime.today() + timedelta(days=1)).strftime("%Y-%m-%d") + ' 00'
-):
+def hour_range(start_date=datetime.today().strftime("%Y-%m-%d") + ' 00',
+               end_date=(datetime.today() + timedelta(days=1)).strftime("%Y-%m-%d") + ' 00'
+               ):
     """
     获取时间段中的每个整点时间刻，返回列表
     :param start_date:
