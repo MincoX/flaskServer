@@ -1,10 +1,9 @@
-import requests
 from flask import request, jsonify
 
-from App.api_mp import api_mp
-from settings import MiniProgram
-from common import wx_http, api_service
-from models import SessionManager, UserInfo
+from apis.mp import api_mp
+from apps.wechat_mp.config import MiniProgram
+from apps.wechat_mp.models import SessionManager, UserInfo
+from common import wx_http
 from common.utils import object_to_dict
 
 session_manager = SessionManager()

@@ -13,7 +13,7 @@ daemon = 'false'
 # 有 sync, eventlet, gevent, tornado, gthread, 缺省值sync
 worker_class = "gevent"
 
-# 指定项目的根目录，在 app 加载之前，进入到此目录
+# 指定项目的根目录，在 apis 加载之前，进入到此目录
 chdir = '/home/project/flask-server'
 
 # 设置进程文件目录

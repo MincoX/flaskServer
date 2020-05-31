@@ -1,13 +1,7 @@
-import json
-import types
 import logging
 import traceback
-import importlib
 
-from flask import request, abort
-from flask_login import current_user
-
-from models import Session
+from apps.wechat.models import Session
 
 
 class Service:
@@ -85,11 +79,11 @@ class ApiService:
 #     module_name, func_name = slug.split('.')
 #
 #     if request.method == 'GET':
-#         module = importlib.import_module(f'App.api_v1.{module_name}')
+#         module = importlib.import_module(f'apis.api_v1.{module_name}')
 #         service_obj = getattr(module, f'get_{func_name}')
 #         ret = service_obj(**request.args.to_dict())
 #     else:
-#         module = importlib.import_module(f'App.api_v1.{module_name}')
+#         module = importlib.import_module(f'apis.api_v1.{module_name}')
 #         service_obj = getattr(module, f'post_{func_name}')
 #
 #         ret = service_obj(**request.args.to_dict())
@@ -98,7 +92,7 @@ class ApiService:
 
 
 if __name__ == '__main__':
-    # module = importlib.import_module('App.api_v1.dashboard')
+    # module = importlib.import_module('apis.api_v1.dashboard')
     # func = module.get_navigate
     # print(func)
     # print(module)

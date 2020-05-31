@@ -3,41 +3,26 @@ import sys
 import redis
 
 BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-sys.path.insert(0, os.path.join(BASE_DIR, 'Server_Flask'))
-
-SECRET_KEY = 'flask_server'
-ADMIN_NAME = 'MincoX'
-ADMIN_PASSWORD = 'mincoroot'
-UPLOAD_FOLDER = 'App/static/upload/'
-
-
-class MiniProgram:
-    AppId = "wx292c8e757abcef11"
-    AppSec = "70640820ff52408b0d4707d6bd8a2d95"
-
-
-class WeChat:
-    AppId = ""
-    AppSec = ""
+sys.path.insert(0, os.path.join(BASE_DIR, 'flaskServer'))
 
 
 class Config:
-    DEBUG = True
-    HOST = '49.232.19.51'
-    PORT = 80
-
-    MYSQL_HOST = '127.0.0.1'
-    MYSQL_PORT = 3306
-    MYSQL_USER = 'root'
-    MYSQL_PWD = 'root'
-    DATABASE = 'MpWeChat'
-
     SECRET_KEY = 'flask_server'
 
+    DEBUG = True
+    HOST = '47.102.134.101'
+    PORT = 5000
+
+    MYSQL_HOST = '47.102.134.101'
+    MYSQL_PORT = 3306
+    MYSQL_USER = 'root'
+    MYSQL_PWD = 'mincoroot_924'
+    DATABASE = None
+
     # Redis
-    REDIS_HOST = '49.232.19.51'
-    REDIS_PORT = 63791
-    REDIS_PWD = ''
+    REDIS_HOST = '47.102.134.101'
+    REDIS_PORT = 6379
+    REDIS_PWD = None
 
     # flask_session
     SESSION_TYPE = 'redis'
@@ -52,7 +37,7 @@ class Develop(Config):
     """
     DEBUG = True
     HOST = '127.0.0.1'
-    PORT = 80
+    PORT = 5000
 
 
 class Product(Config):
@@ -60,8 +45,10 @@ class Product(Config):
     生产环境配置信息
     """
     DEBUG = False
-    HOST = '49.232.19.51'
-    PORT = 80
+    HOST = '0.0.0.0'
+    PORT = 5000
+
+    MYSQL_HOST = '127.0.0.1'
 
 
 config_map = {

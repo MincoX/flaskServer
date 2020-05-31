@@ -14,7 +14,7 @@ login_manager = None
 
 def create_app(config_name):
     """
-    创建 app 对象
+    创建 apis 对象
     :return:
     """
 
@@ -32,7 +32,7 @@ def create_app(config_name):
     app.config['JSON_AS_ASCII'] = False
 
     CORS(app, supports_credentials=True)
-    # CSRFProtect(app)
+    # CSRFProtect(apis)
 
     global redis_store
     redis_store = redis.StrictRedis(host=config_class.REDIS_HOST, port=config_class.REDIS_PORT)
@@ -42,7 +42,10 @@ def create_app(config_name):
     session.init_app(app)
 
     # 解决循环导入问题
-    from App.api_mp import api_mp
+    from apis.mp import api_mp
+    from apis.proxy import api_proxy
+
     app.register_blueprint(api_mp)
+    app.register_blueprint(api_proxy)
 
     return app

@@ -1,26 +1,25 @@
 import threading
-from datetime import datetime
 
 from contextlib import contextmanager
 from typing import Any
 
-from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.mutable import MutableDict, MutableList
-from sqlalchemy import create_engine, Column, Integer, String, Float, JSON, Table, \
-    ForeignKey, DateTime, func, Boolean, Text, LargeBinary
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, Boolean
 
 import settings
 from manager import MODEL
 
+DATABASE = 'MpWeChat'
+
 engine = create_engine(
     f"mysql+mysqlconnector://{settings.config_map[MODEL].MYSQL_USER}:{settings.config_map[MODEL].MYSQL_PWD}"
     f"@{settings.config_map[MODEL].MYSQL_HOST}:{settings.config_map[MODEL].MYSQL_PORT}"
-    f"/{settings.config_map[MODEL].DATABASE}",
-    max_overflow=0,  # 超过连接池大小外最多创建的连接
-    pool_size=300,  # 连接池大小
-    pool_timeout=20,  # 连接池中没有已建立的连接时，新建立 http 连接最多等待的时间
-    pool_recycle=60 * 5,  # session 对象被重置，防止 mysql 清除建立的 http 连接后，session 对象还保持原有会话而报错
+    f"/{DATABASE}",
+    max_overflow=0,
+    pool_size=300,
+    pool_timeout=20,
+    pool_recycle=60 * 5,
 )
 
 Base = declarative_base()
