@@ -1,7 +1,7 @@
 import multiprocessing
 
 # 监听地址和端口
-bind = '127.0.0.1:5000'
+bind = '0.0.0.0:5000'
 
 # 进程的数量，缺省为1
 workers = multiprocessing.cpu_count() * 2 + 1
