@@ -52,8 +52,6 @@ class Product(Config):
     SERVER_HOST = '0.0.0.0'
     PORT = 5000
 
-    # HOST = '127.0.0.1'
-
 
 config_map = {
     'develop': Develop,

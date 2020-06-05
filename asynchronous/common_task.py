@@ -2,7 +2,6 @@ import time
 
 from flask_mail import Mail, Message
 
-from manager import app
 from celery_app import c_app
 from asynchronous.abstract import DebugTask
 
@@ -18,6 +17,9 @@ def mail_send(self, subject, sender, recipients, body):
     :param body: 邮件内容
     :return:
     """
+    # 循环导入 bug
+    from manager import app
+
     mail = Mail(app)
     msg = Message(
         subject=subject,

@@ -2,16 +2,25 @@ version: '3'
 
 services:
 
-  flask_server:
-    container_name: flask_server
+  flask_server_api:
+    container_name: flask_server_api
     restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
-    image: flask_server
+    image: flask_server_api
     ports:
       - "8888:5000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ./:/usr/src/flaskServer
+
+  flask_server_celery:
+    container_name: flask_server_celery
+    build:
+      context: .
+      dockerfile: ./asynchronous/Dockerfile
+    image: flask_server_celery
+    volumes:
       - ./:/usr/src/flaskServer
 

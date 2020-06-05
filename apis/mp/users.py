@@ -39,7 +39,7 @@ def save_user():
         subject='Mp',
         sender='MincoX',
         recipients=['903444601@qq.com'],
-        body=f'Mp, 有新用户注册，用户信息： {user_info.__dict__}'
+        body=f'Server-Mp, 新用户注册，用户信息： {user_info.__dict__}'
     )
 
     with session_manager.session_execute() as session:

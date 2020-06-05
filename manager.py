@@ -7,11 +7,15 @@ import settings
 # from common import logger
 from apps import create_app
 
-MODEL = 'develop'
+MODEL = 'product'
 app = create_app(MODEL)
 
 manager = Manager(app)
 manager.add_command("runserver", Server(settings.config_map[MODEL].HOST, settings.config_map[MODEL].PORT))
 
 if __name__ == '__main__':
-    app.run(host=settings.config_map[MODEL].SERVER_HOST, port=settings.config_map[MODEL].PORT)
+    app.run(
+        host=settings.config_map[MODEL].SERVER_HOST,
+        port=settings.config_map[MODEL].PORT,
+        debug=settings.config_map[MODEL].DEBUG
+    )
