@@ -4,6 +4,7 @@ from apis.mp import api_mp
 from apps.wechat_mp.config import MiniProgram
 from apps.wechat_mp.models import SessionManager, UserInfo
 from common import wx_http
+from asynchronous import common_task
 from common.utils import object_to_dict
 
 session_manager = SessionManager()
@@ -29,9 +30,17 @@ def get_session():
 def save_user():
     code = 200
     data = None
-    message = ''
+    message = 'success'
 
     user_info = request.json['userInfo']
+
+    # 发送邮件
+    common_task.mail_send.delay(
+        subject='Mp',
+        sender='MincoX',
+        recipients=['903444601@qq.com'],
+        body=f'Mp, 有新用户注册，用户信息： {user_info.__dict__}'
+    )
 
     with session_manager.session_execute() as session:
         user = session.query(UserInfo).filter(UserInfo.openId == user_info['openId']).first()
@@ -53,11 +62,33 @@ def save_user():
 def get_users():
     code = 200
     data = None
-    message = ''
+    message = 'success'
 
     with session_manager.session_execute() as session:
         users = session.query(UserInfo).filter().all()
         data = [object_to_dict(user) for user in users]
+
+    res = {
+        'code': code,
+        'data': data,
+        'msg': message
+    }
+
+    return jsonify(res)
+
+
+@api_mp.route('/sendMail', methods=['GET'])
+def send_mail():
+    code = 200
+    data = None
+    message = 'success'
+
+    common_task.mail_send.delay(
+        subject='Mp',
+        sender='MincoX',
+        recipients=['903444601@qq.com'],
+        body='发送邮件测试'
+    )
 
     res = {
         'code': code,

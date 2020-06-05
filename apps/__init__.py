@@ -35,11 +35,18 @@ def create_app(config_name):
     # CSRFProtect(apis)
 
     global redis_store
-    redis_store = redis.StrictRedis(host=config_class.REDIS_HOST, port=config_class.REDIS_PORT)
-
+    redis_store = redis.StrictRedis(host=config_class.HOST, port=config_class.REDIS_PORT)
     app.config['PERMANENT_SESSION_LIFETIME'] = 60 * 60 * 2
     session = Session()
     session.init_app(app)
+
+    # 配置 qq 邮箱
+    app.config['MAIL_SERVER'] = 'smtp.qq.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USE_SSL'] = True
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USERNAME'] = '903444601@qq.com'
+    app.config['MAIL_PASSWORD'] = 'fchqhwiuotipbbac'
 
     # 解决循环导入问题
     from apis.mp import api_mp

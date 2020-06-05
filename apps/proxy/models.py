@@ -16,7 +16,7 @@ DATABASE = 'proxy_server'
 
 engine = create_engine(
     f"mysql+mysqlconnector://{settings.config_map[MODEL].MYSQL_USER}:{settings.config_map[MODEL].MYSQL_PWD}"
-    f"@{settings.config_map[MODEL].MYSQL_HOST}:{settings.config_map[MODEL].MYSQL_PORT}"
+    f"@{settings.config_map[MODEL].HOST}:{settings.config_map[MODEL].MYSQL_PORT}"
     f"/{DATABASE}",
     max_overflow=0,
     pool_size=300,

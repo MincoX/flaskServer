@@ -17,7 +17,7 @@ class RedisModel(object):
     @staticmethod
     def create_pool():
         RedisModel.pool = redis.ConnectionPool(
-            host=config_class.REDIS_HOST,
+            host=config_class.HOST,
             port=config_class.REDIS_PORT,
             password=config_class.REDIS_PWD,
             db=0
