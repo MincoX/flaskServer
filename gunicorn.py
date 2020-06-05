@@ -1,9 +1,10 @@
 import multiprocessing
 
 from manager import MODEL
+from settings import config_map
 
-# 监听地址和端口
-bind = f'{MODEL.HOST}:{MODEL.PORT}'
+config_class = config_map.get(MODEL)
+bind = f'{config_class.HOST}:{config_class.PORT}'
 
 # 进程的数量，缺省为1
 workers = multiprocessing.cpu_count() * 2 + 1
