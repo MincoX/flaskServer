@@ -1,6 +1,6 @@
 from flask import request, jsonify
 
-from apis.mp import api_mp
+from apis.wechat_mp import api_mp
 from apps.wechat_mp.config import MiniProgram
 from apps.wechat_mp.models import SessionManager, UserInfo
 from common import wx_http

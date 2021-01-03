@@ -49,7 +49,7 @@ def create_app(config_name):
     app.config['MAIL_PASSWORD'] = 'fchqhwiuotipbbac'
 
     # 解决循环导入问题
-    from apis.mp import api_mp
+    from apis.wechat_mp import api_mp
     from apis.proxy import api_proxy
 
     app.register_blueprint(api_mp)
