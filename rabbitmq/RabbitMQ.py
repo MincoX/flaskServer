@@ -43,8 +43,7 @@ class RabbitMq:
         """简单队列下的生产方
         :return:
         """
-        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
-                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         self.channel.queue_declare(
             self.queue_name,
@@ -123,8 +122,7 @@ class RabbitMq:
         """发布订阅广播模式的生产者
         :return:
         """
-        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
-                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         # 声明交换机
         self.channel.exchange_declare(
@@ -228,8 +226,7 @@ class RabbitMq:
         """直连模式的生产者
         :return:
         """
-        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
-                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         # 声明交换机
         self.channel.exchange_declare(
@@ -335,8 +332,7 @@ class RabbitMq:
         """主题模式下的生产者
         :return:
         """
-        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
-                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         # 声明交换机
         self.channel.exchange_declare(
