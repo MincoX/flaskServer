@@ -17,9 +17,9 @@ services:
 
   flask_server_celery:
     container_name: flask_server_celery
+    build:
+      context: .
+      dockerfile: ./asynchronous/Dockerfile
     image: flask_server
     volumes:
       - ./:/usr/src/flaskServer
-
-    command: ['celery', '-A', 'celery_app', 'worker', '-l', 'info']
-
