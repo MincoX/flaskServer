@@ -1,7 +1,10 @@
-from celery import Task
-
 """ celery 抽象任务
 """
+
+from celery import Task
+from logs import get_logger
+
+logger = get_logger('celery_task')
 
 
 class DebugTask(Task):
@@ -16,7 +19,7 @@ class DebugTask(Task):
         :param kwargs:
         :return:
         """
-        print('任务执行成功'.center(100, '*'))
+        logger.info(' 任务执行成功 '.center(100, '*'))
 
     def on_retry(self, exc, task_id, args, kwargs, error_info):
         """ 任务重试时执行，可以通过判断任务重复执行的次数，在这里进行控制重试策略
@@ -29,7 +32,7 @@ class DebugTask(Task):
         :return:
         """
         retries = self.request.retries
-        print('task_retry >>> 第{}次任务重试'.format(retries).center(100, '*')) if retries != 0 else ''
+        logger.info(f' task_retry >>> 第 {retries} 次任务重试 '.center(100, '*')) if retries != 0 else ''
 
     def on_failure(self, exc, task_id, args, kwargs, error_info):
         """
@@ -41,7 +44,7 @@ class DebugTask(Task):
         :param error_info:
         :return:
         """
-        print('任务执行失败'.center(100, '*'))
+        logger.info(' 任务执行失败 '.center(100, '*'))
 
     def after_return(self, *args, **kwargs):
         """ Handler called after the task returns.
@@ -50,4 +53,4 @@ class DebugTask(Task):
         :param kwargs:
         :return:
         """
-        print('Task returned: {0!r}'.format(self.request))
+        logger.info(' Task returned: {0!r} '.format(self.request))
