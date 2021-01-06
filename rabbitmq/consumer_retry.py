@@ -7,7 +7,7 @@ from common.utils import user_to_device
 from common.mysql_pool import ConnMysql
 from rabbitmq.RabbitMQ import new_routing, get_retry_count, fail_task_handle, retry_task_handle, DELAY_MAP
 
-logger = get_logger('wechat_mp_mq')
+logger = get_logger('wechat_mp')
 
 
 def call_back(channel, method, properties, body):
