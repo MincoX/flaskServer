@@ -1,6 +1,7 @@
 import json
 from flask import request, jsonify
 
+from logs import get_logger
 from apis.wechat_mp import api_mp
 from rabbitmq.RabbitMQ import new_routing
 from apps.wechat_mp.config import MiniProgram
@@ -10,6 +11,7 @@ from asynchronous import common_task
 from common.utils import object_to_dict, user_to_device
 
 session_manager = SessionManager()
+logger = get_logger('wechat_mp')
 
 
 @api_mp.route('/')
@@ -204,6 +206,14 @@ def audit_user():
             user.apply_status = 2
             result = True
             message = '已拒绝下发用户'
+            
+            common_task.mail_send.delay(
+                subject='Mp',
+                sender='MincoX',
+                recipients=[user.email],
+                body=f'管理员拒绝了您 {user.apply_date} 的预约'
+            )
+            logger.info(f' 已拒绝用户 {user.real_name} 的下发 ')
 
         else:
             result, reason = user_to_device(user)
@@ -216,6 +226,7 @@ def audit_user():
                     recipients=[user.email],
                     body=f'恭喜你预约 {user.apply_date} 成功'
                 )
+                logger.info(f' 用户 {user.real_name} 下发成功，已发送邮件通知对方 ')
 
             else:
                 message = reason
