@@ -1,4 +1,4 @@
-amqp==2.5.0
+amqp==2.6.0
 billiard==3.6.3.0
 blinker==1.4
 cachelib==0.1
@@ -26,7 +26,10 @@ kombu==4.6.10
 MarkupSafe==1.1.1
 monotonic==1.5
 mysql-connector-python-rf==2.2.2
+numpy==1.19.5
+opencv-python==4.5.1.48
 pika==1.1.0
+PyMySQL==0.10.1
 pytz==2020.1
 redis==3.5.2
 requests==2.23.0
