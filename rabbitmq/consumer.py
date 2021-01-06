@@ -12,8 +12,8 @@ def call_back(channel, method, properties, body):
 
 
 # 创建简单队列，简单队列默只用传入队列的名称
-# mq = new_simple('test_simple')
-# mq.simple_consumer(call_back=call_back)
+mq = new_simple('simple')
+mq.simple_consumer(call_back=call_back)
 
 # 创建广播模式的消费者
 # mq = new_broadcast('test_fanout')
@@ -21,8 +21,8 @@ def call_back(channel, method, properties, body):
 
 # 创建直连模式的消费者
 # mq = new_routing('routingExchange', 'routingQueue', 'info')
-mq = new_routing('routingExchange', 'routingQueue', ['info', 'warn'])
-mq.routing_consumer(call_back)
+# mq = new_routing('routingExchange', 'routingQueue', ['info', 'warn'])
+# mq.routing_consumer(call_back)
 
 # 创建话题模式下的消费者
 # mq = new_topic("test_topic", ['*.info', '*.warn', '*.error'])

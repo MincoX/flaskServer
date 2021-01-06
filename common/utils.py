@@ -1,5 +1,7 @@
 import re
+import json
 import time
+import random
 from datetime import datetime, timedelta
 
 # from common import logger
@@ -88,27 +90,23 @@ def calculate_time_countdown(end):
     return total_seconds, days, hours, minutes, seconds
 
 
-def filter_tags(htmlstr):
-    """
-    去除富文本框中的标签
-    :param htmlstr:
+def user_to_device(user_obj):
+    """ 模拟将用户下发至设备
+    :param user_obj:
     :return:
     """
-    # 先过滤CDATA
-    re_cdata = re.compile('//<!\[CDATA\[[^>]*//\]\]>', re.I)  # 匹配CDATA
-    re_script = re.compile('<\s*script[^>]*>[^<]*<\s*/\s*script\s*>', re.I)  # Script
-    re_style = re.compile('<\s*style[^>]*>[^<]*<\s*/\s*style\s*>', re.I)  # style
-    re_br = re.compile('<br\s*?/?>')  # 处理换行
-    re_h = re.compile('</?\w+[^>]*>')  # HTML标签
-    re_comment = re.compile('<!--[^>]*-->')  # HTML注释
-    s = re_cdata.sub('', htmlstr)  # 去掉CDATA
-    s = re_script.sub('', s)  # 去掉SCRIPT
-    s = re_style.sub('', s)  # 去掉style
-    s = re_br.sub('\n', s)  # 将br转换为换行
-    s = re_h.sub('', s)  # 去掉HTML 标签
-    s = re_comment.sub('', s)  # 去掉HTML注释
-    # 去掉多余的空行
-    blank_line = re.compile('\n+')
-    s = blank_line.sub('\n', s)
+    message = None
 
-    return s
+    reason_map = {
+        0: "网络不稳定， 用户下发失败",
+        1: "人员信息有误， 用户下发失败",
+        2: "图片尺寸不符合要求， 用户下发失败"
+    }
+
+    if random.randint(0, 99) % 2 == 0:
+        result = True
+    else:
+        result = False
+    message = reason_map.get(random.randint(0, 2))
+
+    return result, message

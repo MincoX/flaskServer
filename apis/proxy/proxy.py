@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import jsonify
 
 from apis.proxy import api_proxy
 from apps.proxy.models import SessionManager, Proxy
@@ -10,7 +10,7 @@ session_manager = SessionManager()
 @api_proxy.route('/getProxies', methods=['GET'])
 def get_users():
     code = 200
-    data = None
+    data = {}
     message = ''
 
     with session_manager.session_execute() as session:

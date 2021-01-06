@@ -1,8 +1,10 @@
+__pycache__
+
 .idea
 .git
 
-__pycache__
-
 *.log
-logs/
+*.jpg
+*.png
 
+static/upload/

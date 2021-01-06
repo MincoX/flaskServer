@@ -5,17 +5,16 @@ from typing import Any
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, Boolean, Date
 
 import settings
 from manager import MODEL
-
-DATABASE = 'MpWeChat'
+from apps.wechat_mp.config import MiniProgram
 
 engine = create_engine(
     f"mysql+mysqlconnector://{settings.config_map[MODEL].MYSQL_USER}:{settings.config_map[MODEL].MYSQL_PWD}"
     f"@{settings.config_map[MODEL].HOST}:{settings.config_map[MODEL].MYSQL_PORT}"
-    f"/{DATABASE}",
+    f"/{MiniProgram.DATABASE}",
     max_overflow=0,
     pool_size=300,
     pool_timeout=20,
@@ -27,8 +26,7 @@ Session = sessionmaker(bind=engine)
 
 
 class SessionManager:
-    """
-    单例模式封装 session 的统一入口
+    """ 单例模式封装 session 的统一入口
     """
     _lock = threading.Lock()
 
@@ -62,9 +60,22 @@ class UserInfo(Base):
     openId = Column(String(128), unique=True, nullable=False)
     username = Column(String(128), nullable=False, default='')
     password = Column(String(256), nullable=False, default='')
-    nickName = Column(String(128), unique=False, nullable=True)
+
     gender = Column(Integer, default=0)
-    avatarUrl = Column(String(256), nullable=True)
+    email = Column(String(256), nullable=True)
+    phone = Column(String(128), nullable=True)
+    id_card_num = Column(String(128), nullable=True)
+    face_path = Column(String(128), nullable=False, default='')
+    real_name = Column(String(128), nullable=False, default='')
+    apply_date = Column(String(128), nullable=False, default='')
+
+    # 0: 申请成功； 1：审核通过； 2：下发失败； 3：任务重试
+    apply_status = Column(Integer, default=-1)
+    retry_count = Column(Integer, default=0)
+    fail_reason = Column(String(128), nullable=False, default='图片大小不符合要求')
+
+    nick_name = Column(String(128), unique=False, nullable=True)
+    avatar_url = Column(String(256), nullable=True)
     auth_key = Column(String(256), nullable=True)
     active = Column(Boolean, default=True)
 
@@ -74,8 +85,6 @@ class UserInfo(Base):
     city = Column(String(128), nullable=True)
     birthday = Column(DateTime(timezone=True), nullable=True)
 
-    phone = Column(String(128), nullable=True)
-    email = Column(String(256), nullable=True)
     create_time = Column(DateTime(timezone=True), default=func.now())
 
     def is_authenticated(self):
@@ -88,7 +97,18 @@ class UserInfo(Base):
         return False
 
     def __repr__(self):
-        return f'>>> nickName: {self.nickName}, openId: {self.openId}'
+        return f'>>> nick_name: {self.nick_name}, openId: {self.openId}'
+
+
+class Admin(Base):
+    __tablename__ = 'admin'
+
+    id = Column(Integer, primary_key=True)
+    openId = Column(String(128), unique=True, nullable=False)
+    username = Column(String(128), unique=True, nullable=False, default='')
+    password = Column(String(256), nullable=False, default='')
+
+    create_time = Column(DateTime(timezone=True), default=func.now())
 
 
 def init_db():
@@ -102,3 +122,12 @@ def drop_db():
 if __name__ == '__main__':
     # drop_db()
     init_db()
+
+    session_manager = SessionManager()
+    with session_manager.session_execute() as session:
+        admin = session.query(Admin).filter(Admin.username == 'MincoX').first()
+        if not admin:
+            user = Admin(openId='1', username='MincoX', password='123456')
+            session.add(user)
+
+    print(' 数据库初始化成功 '.center(100, '*'))

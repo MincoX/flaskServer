@@ -18,7 +18,7 @@ def create_app(config_name):
     :return:
     """
 
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../static')
 
     config_class = config_map.get(config_name)
     app.config.from_object(config_class)

@@ -3,6 +3,9 @@ import time
 import pika
 
 import settings
+from logs import get_logger
+
+logger = get_logger('wechat_mp')
 
 USERNAME = settings.Product.MQ_USER
 PASSWORD = settings.Product.MQ_PWD
@@ -14,10 +17,10 @@ credentials = pika.PlainCredentials(USERNAME, PASSWORD)
 parameters = pika.ConnectionParameters(host=HOST, virtual_host=V_HOST, credentials=credentials)
 
 DELAY_MAP = {
-    0: 1000 * 10,
-    1: 1000 * 20,
-    2: 1000 * 30,
-    3: 1000 * 60,
+    0: 1000 * 60 * 5,
+    1: 1000 * 60 * 15,
+    2: 1000 * 60 * 30,
+    3: 1000 * 60 * 60,
 }
 
 
@@ -40,8 +43,8 @@ class RabbitMq:
         """简单队列下的生产方
         :return:
         """
-        print(f'{time.time()} >>> exchange_name: {self.exchange_name}, '
-              f'queue_name: {self.queue_name} send message'.center(100, '*'))
+        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
+                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         self.channel.queue_declare(
             self.queue_name,
@@ -82,7 +85,7 @@ class RabbitMq:
         """简单队列的消息消费者
         :return:
         """
-        print(f'exchange_name: {self.exchange_name}, queue_name: {self.queue_name} start consumer'.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 消费消息 '.center(100, '*'))
         # 声明队列，如果队列不存在则会自动创建，保证队列存在才可以发送消息
         self.channel.queue_declare(
             self.queue_name,
@@ -120,8 +123,8 @@ class RabbitMq:
         """发布订阅广播模式的生产者
         :return:
         """
-        print(f'{time.time()} >>> exchange_name: {self.exchange_name}, '
-              f'queue_name: {self.queue_name} send message'.center(100, '*'))
+        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
+                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         # 声明交换机
         self.channel.exchange_declare(
@@ -163,7 +166,7 @@ class RabbitMq:
         """广播模式下的消费者
         :return:
         """
-        print(f'exchange_name: {self.exchange_name}, queue_name: {self.queue_name} start consumer'.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 消费消息 '.center(100, '*'))
         # 声明交换机
         self.channel.exchange_declare(
             # 交换机名称
@@ -225,8 +228,8 @@ class RabbitMq:
         """直连模式的生产者
         :return:
         """
-        print(f'{time.time()} >>> exchange_name: {self.exchange_name}, '
-              f'queue_name: {self.queue_name} send message'.center(100, '*'))
+        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
+                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         # 声明交换机
         self.channel.exchange_declare(
@@ -268,7 +271,7 @@ class RabbitMq:
         """直连模式的消费者
         :return:
         """
-        print(f'exchange_name: {self.exchange_name}, queue_name: {self.queue_name} start consumer'.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 消费消息 '.center(100, '*'))
         # 声明交换机
         self.channel.exchange_declare(
             # 交换机名称
@@ -332,8 +335,8 @@ class RabbitMq:
         """主题模式下的生产者
         :return:
         """
-        print(f'{time.time()} >>> exchange_name: {self.exchange_name}, '
-              f'queue_name: {self.queue_name} send message'.center(100, '*'))
+        logger.info(f' {time.time()} >>> 交换机名: {self.exchange_name}, '
+                    f'队列名: {self.queue_name} 发送消息 '.center(100, '*'))
 
         # 声明交换机
         self.channel.exchange_declare(
@@ -375,7 +378,7 @@ class RabbitMq:
         """主题模式下的消费者
         :return:
         """
-        print(f'exchange_name: {self.exchange_name}, queue_name: {self.queue_name} start consumer'.center(100, '*'))
+        logger.info(f' 交换机名: {self.exchange_name}, 队列名: {self.queue_name} 消费消息 '.center(100, '*'))
         # 声明交换机
         self.channel.exchange_declare(
             # 交换机名称
@@ -451,7 +454,8 @@ class RabbitMq:
             'x-dead-letter-exchange': self.exchange_name,
             'x-message-ttl': 1000 * 60 * 5
         })
-        # 声明失败队列，对与重试多次仍然失败的消息进入失败队列，通过邮件/短信通知管理员
+
+        # 声明失败队列，对于重试多次仍然失败的消息进入失败队列，通过邮件/短信通知管理员
         self.channel.queue_declare(queue=self.fail_queue, durable=True, auto_delete=False, arguments=None)
 
         # 队列绑定到对应的交换机上
@@ -570,7 +574,7 @@ def fail_task_handle(mq, channel, method, properties, body):
     """
     channel.basic_publish(
         mq.fail_exchange,
-        routing_key=method.routing_key,
+        routing_key=mq.fail_queue,
         body=body,
         mandatory=False,
         properties=pika.BasicProperties(

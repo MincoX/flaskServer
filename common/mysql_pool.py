@@ -1,15 +1,27 @@
 import pymysql
 
+import settings
+from manager import MODEL
+
+from apps.wechat_mp.config import MiniProgram
+
 
 class ConnMysql(object):
 
-    def __init__(self, db, host="localhost", port=33061, user="root", pwd="root", charset="utf8") -> None:
+    def __init__(
+            self,
+            db=MiniProgram.DATABASE, host=settings.config_map[MODEL].HOST,
+            port=settings.config_map[MODEL].MYSQL_PORT,
+            user=settings.config_map[MODEL].MYSQL_USER,
+            pwd=settings.config_map[MODEL].MYSQL_PWD, charset="utf8"
+    ) -> None:
         self.host = host
         self.port = port
         self.user = user
         self.pwd = pwd
         self.db = db
         self.charset = charset
+        self.init()
 
     def init(self):
         self.conn_mysql = pymysql.connect(
@@ -23,51 +35,60 @@ class ConnMysql(object):
         self.cursor = self.conn_mysql.cursor()
 
     def query(self, sql, params):
-        self.init()
+
         res = self.cursor.execute(sql, params)
         # record = self.cursor.fetchone()
         records = self.cursor.fetchall()
         self.close()
+
         return res, records  # 此时以元组的形式返回
 
     def insert(self, sql, params):
-        self.init()
         try:
             res = self.cursor.execute(sql, params)
             self.conn_mysql.commit()
-            return res
+
+            return res, None
+
         except Exception as e:
-            print("插入失败, 错误信息：{}".format(e))
             self.conn_mysql.rollback()
+
+            return False, e
+
         finally:
             self.close()
 
     def delete(self, sql, params):
-        self.init()
         try:
             res = self.cursor.execute(sql, params)
             self.conn_mysql.commit()
-            return res
+
+            return res, None
+
         except Exception as e:
-            print("删除失败, 错误信息：{}".format(e))
             self.conn_mysql.rollback()
+
+            return False, e
+
         finally:
             self.close()
 
     def update(self, sql, params):
-        self.init()
         try:
             res = self.cursor.execute(sql, params)
             self.conn_mysql.commit()
-            return res
+
+            return res, None
+
         except Exception as e:
-            print("修改失败, 错误信息：{}".format(e))
             self.conn_mysql.rollback()
+
+            return False, e
+
         finally:
             self.close()
 
     def close(self):
-        self.init()
         if self.cursor:
             self.cursor.close()
         if self.conn_mysql:
