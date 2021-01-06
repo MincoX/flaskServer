@@ -206,7 +206,7 @@ def audit_user():
             user.apply_status = 2
             result = True
             message = '已拒绝下发用户'
-            
+
             common_task.mail_send.delay(
                 subject='Mp',
                 sender='MincoX',
