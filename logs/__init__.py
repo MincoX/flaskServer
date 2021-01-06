@@ -7,10 +7,10 @@ ROOT_PATH = str(os.path.abspath(os.path.dirname(__file__)).split("flaskServer")[
 
 
 class LogConfig:
-    FORMAT = '%(asctime)s File "%(filename)s",line %(lineno)s %(levelname)s: %(message)s'
-    FILEPATH = f'{ROOT_PATH}/flaskServer/logs'
     LEVEL = 'INFO'
     ENCODING = 'UTF-8'
+    FILEPATH = f'{ROOT_PATH}/flaskServer/logs'
+    FORMAT = '%(asctime)s File "%(filename)s",line %(lineno)s %(levelname)s: %(message)s'
 
 
 class SafeFileHandler(logging.FileHandler):
