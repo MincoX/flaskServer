@@ -9,59 +9,47 @@ ROOT_PATH = str(os.path.abspath(os.path.dirname(__file__)).split("flaskServer")[
 class LogConfig:
     FORMAT = '%(asctime)s File "%(filename)s",line %(lineno)s %(levelname)s: %(message)s'
     FILEPATH = f'{ROOT_PATH}/flaskServer/logs'
-    LEVEL = 'info'
-    SUFFIX = '%Y-%m-%d_%H.log'
-    WHEN = 'H'
-    INTERVAL = '1'
-    BACKUP_COUNT = '0'
+    LEVEL = 'INFO'
     ENCODING = 'UTF-8'
 
 
 class SafeFileHandler(logging.FileHandler):
     def __init__(self, filename, mode="a", delay=0):
 
-        current_time = time.strftime(LogConfig.SUFFIX, time.localtime())
-        logging.FileHandler.__init__(self, filename + "." + current_time, mode, LogConfig.ENCODING, delay)
+        logging.FileHandler.__init__(self, filename, mode, LogConfig.ENCODING, delay)
 
         self.mode = mode
-        self.suffix = LogConfig.SUFFIX
         self.filename = os.fspath(filename)
         self.encoding = LogConfig.ENCODING
-        self.suffix_time = current_time
 
     def emit(self, record):
         try:
             if self.check_base_filename():
                 self.build_base_filename()
+
             logging.FileHandler.emit(self, record)
+
         except(KeyboardInterrupt, SystemExit):
             raise
         except:
             self.handleError(record)
 
     def check_base_filename(self):
-        time_tuple = time.localtime()
 
-        if self.suffix_time != time.strftime(self.suffix, time_tuple) or not os.path.exists(
-                os.path.abspath(self.filename) + '.' + self.suffix_time):
-            return 1
+        if not os.path.exists(os.path.abspath(self.filename)):
+
+            return True
+
         else:
-            return 0
+
+            return False
 
     def build_base_filename(self):
         if self.stream:
             self.stream.close()
             self.stream = None
 
-        # if self.suffix_time != "":
-        #     index = self.baseFilename.find("." + self.suffix_time)
-        #     if index == -1:
-        #         index = self.baseFilename.rfind(".")
-        #     self.baseFilename = self.baseFilename[:index]
-
-        current_time_tuple = time.localtime()
-        self.suffix_time = time.strftime(self.suffix, current_time_tuple)
-        self.baseFilename = os.path.abspath(self.filename) + "." + self.suffix_time
+        self.baseFilename = os.path.abspath(self.filename)
 
         if not self.delay:
             self.stream = open(self.baseFilename, self.mode, encoding=self.encoding)
@@ -69,22 +57,16 @@ class SafeFileHandler(logging.FileHandler):
 
 def get_logger(app_name='default'):
     logger = logging.getLogger(app_name)
-
-    formatter = logging.Formatter(LogConfig.FORMAT)
+    logging.basicConfig(level=LogConfig.LEVEL, format=LogConfig.FORMAT)
 
     handler = SafeFileHandler(LogConfig.FILEPATH + '/' + app_name + ".log")
-    handler.setFormatter(formatter)
-
-    stream = logging.StreamHandler()
-    stream.setFormatter(formatter)
-
+    handler.setFormatter(logging.Formatter(LogConfig.FORMAT))
     logger.addHandler(handler)
-    logger.addHandler(stream)
 
-    if LogConfig.LEVEL == 'info':
+    if LogConfig.LEVEL == 'INFO':
         logger.setLevel(logging.INFO)
 
-    elif LogConfig.LEVEL == 'error':
+    elif LogConfig.LEVEL == 'ERROR':
         logger.setLevel(logging.ERROR)
 
     return logger
