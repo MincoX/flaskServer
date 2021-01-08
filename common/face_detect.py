@@ -1,4 +1,5 @@
 import os
+import glob
 
 import cv2
 
@@ -43,6 +44,9 @@ class FaceDetect:
         return resized
 
     def detect(self):
+
+        self.remove_old_face()
+
         gray_img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         face_areas = self.face_xml.detectMultiScale(gray_img, scaleFactor=1.2, minNeighbors=3, flags=0)
 
@@ -70,6 +74,13 @@ class FaceDetect:
         cv2.imwrite(save_path, img)
 
         return save_path
+
+    def remove_old_face(self):
+        filepath, filename = os.path.split(self.upload_path)
+        filename_tup = filename.rpartition('.')
+        old_faces = glob.glob(f'{filepath}/{filename_tup[0]}_face.[jp][pn]g'.replace("\\", "/"))
+        if len(old_faces) >= 1:
+            os.remove(old_faces[0])
 
 
 if __name__ == '__main__':
