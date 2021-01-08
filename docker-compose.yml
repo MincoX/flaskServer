@@ -17,11 +17,23 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./:/usr/src/flaskServer
 
-    command: ["gunicorn", "-c", "/usr/src/flaskServer/gunicorn.py", "manager:app"]
+    command: gunicorn -c /usr/src/flaskServer/gunicorn.py manager:app
 
   celery:
     image: flask_server
     restart: always
     container_name: flask_server_celery
 
-    command: ['CMD', 'celery', '-A', 'celery_app', 'worker', '-l', 'info']
+    command: celery -A celery_app worker -l info
+
+  RabbitMq:
+    image: flask_server
+    restart: always
+    container_name: flask_server_RabbitMq
+
+    command:
+      - /bin/bash
+      - -c
+      - |
+        export PYTHONPATH=/usr/src/flaskServer
+        python rabbitmq/consumer_retry.py
