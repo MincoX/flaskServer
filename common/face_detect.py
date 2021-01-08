@@ -58,7 +58,7 @@ class FaceDetect:
                 self.err_msg = '截取人脸失败，请重新拍摄'
 
         else:
-            save_path = None
+            save_path = ''
             self.err_msg = '未检测到人脸或图片中存在多张人脸，请重新上传！'
 
         return save_path
