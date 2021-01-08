@@ -9,7 +9,7 @@ class FaceDetect:
         self.err_msg = None
         self.upload_path = upload_path
         self.img = self.load_img()
-        self.face_xml = cv2.CascadeClassifier(r'F:\GitSpace\flaskServer\static\ocv_face_detect.xml')
+        self.face_xml = cv2.CascadeClassifier(r'static/ocv_face_detect.xml')
 
     def load_img(self):
         try:
