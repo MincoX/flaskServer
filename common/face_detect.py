@@ -49,13 +49,13 @@ class FaceDetect:
         if len(face_areas) == 1:
             try:
                 (x, y, w, h) = face_areas[0]
-                face = self.img[y - 10: y + h + 10, x - 10: x + w + 10]
+                face = self.img[y - 2: y + h + 2, x - 2: x + w + 2]
                 # face = self.resize(face)
                 save_path = self.save_img(face)
 
             except IndexError:
                 save_path = None
-                self.err_msg = '截取人脸失败！'
+                self.err_msg = '截取人脸失败，请重新拍摄'
 
         else:
             save_path = None
