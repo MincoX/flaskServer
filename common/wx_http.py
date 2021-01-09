@@ -1,7 +1,10 @@
+import sys
 import json
-import gevent.monkey
 
-gevent.monkey.patch_all()
+if sys.platform == 'linux':
+    import gevent.monkey
+
+    gevent.monkey.patch_all()
 
 import requests
 
