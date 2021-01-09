@@ -62,7 +62,7 @@ def save_user():
             subject='Mp',
             sender='MincoX',
             recipients=['903444601@qq.com'],
-            body=f'Server-Mp, 新用户注册，用户信息： {user_info}'
+            body=f'【MincoX】新用户注册，用户信息： {user_info} '
         )
 
     res = {
@@ -212,7 +212,7 @@ def audit_user():
                 subject='Mp',
                 sender='MincoX',
                 recipients=[user.email],
-                body=f'管理员拒绝了您 {user.apply_date} 的预约'
+                body=f'【MincoX】管理员拒绝了您 {user.apply_date} 的预约'
             )
             logger.info(f' 已拒绝用户 {user.real_name} 的下发 ')
 
@@ -225,7 +225,7 @@ def audit_user():
                     subject='Mp',
                     sender='MincoX',
                     recipients=[user.email],
-                    body=f'恭喜你预约 {user.apply_date} 成功'
+                    body=f'【MincoX】恭喜你预约 {user.apply_date} 成功'
                 )
                 logger.info(f' 用户 {user.real_name} 下发成功，已发送邮件通知对方 ')
 
