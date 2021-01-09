@@ -62,7 +62,7 @@ def retry_face_to_device(channel, method, properties, body):
             subject='Mp',
             sender='MincoX',
             recipients=[user.get('email')],
-            body=f'恭喜你预约 {user.get("apply_date")} 成功'
+            body=f'【MincoX】恭喜你预约 {user.get("apply_date")} 成功 （debug 第 {count + 1} 次重试） '
         )
 
     else:
