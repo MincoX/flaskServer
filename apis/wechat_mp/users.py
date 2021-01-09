@@ -127,6 +127,7 @@ def submit_apply():
         )
         message = '申请成功，请等候邮件通知'
 
+    logger.info(f' 用户 {data.get("name")} 提交申请')
     res = {
         'code': code,
         'data': data,
