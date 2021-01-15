@@ -26,6 +26,7 @@ pidfile = '/usr/src/flaskServer/gunicorn.pid'
 worker_connections = 1000
 
 # 设置访问日志和错误信息日志路径
+access_log_format = '%(h)s %(l)s %(u)s %(t)s'
 accesslog = '/usr/src/flaskServer/gunicorn_acess.log'
 errorlog = '/usr/src/flaskServer/gunicorn_error.log'
 
