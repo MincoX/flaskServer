@@ -54,8 +54,9 @@ def save_user():
             )
             session.add(user)
             message = '用户信息保存成功!'
-
             register = True
+
+        data['user_info'] = object_to_dict(user)
 
     if register:
         common_task.mail_send.delay(
