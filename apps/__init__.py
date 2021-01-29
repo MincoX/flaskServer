@@ -51,8 +51,10 @@ def create_app(config_name):
     # 解决循环导入问题
     from apis.wechat_mp import api_mp
     from apis.proxy import api_proxy
+    from apis.vmodel import api_vmodel
 
     app.register_blueprint(api_mp)
     app.register_blueprint(api_proxy)
+    app.register_blueprint(api_vmodel)
 
     return app
