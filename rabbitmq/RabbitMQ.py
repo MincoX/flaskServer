@@ -441,6 +441,7 @@ class RabbitMq:
         # 声明重试交换机，失败任务发送到重试交换机中
         self.channel.exchange_declare(exchange=self.retry_exchange, exchange_type='topic',
                                       durable=True, auto_delete=True)
+
         # 声明失败交换机，重试次数超 3 次将消息发送到失败交换机
         self.channel.exchange_declare(exchange=self.fail_exchange, exchange_type='topic',
                                       durable=True, auto_delete=False)

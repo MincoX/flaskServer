@@ -26,8 +26,6 @@ def create_app(config_name):
     global login_manager
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = 'login'
-    login_manager.refresh_view = 'login'
 
     app.config['JSON_AS_ASCII'] = False
 
@@ -49,12 +47,14 @@ def create_app(config_name):
     app.config['MAIL_PASSWORD'] = 'fchqhwiuotipbbac'
 
     # 解决循环导入问题
-    from apis.wechat_mp import api_mp
+    from apis.common import api_common
     from apis.proxy import api_proxy
-    from apis.vmodel import api_vmodel
+    from apis.wechat_mp import api_mp
+    from apis.vsubscribe import api_vsubscribe
 
+    app.register_blueprint(api_common)
     app.register_blueprint(api_mp)
     app.register_blueprint(api_proxy)
-    app.register_blueprint(api_vmodel)
+    app.register_blueprint(api_vsubscribe)
 
     return app

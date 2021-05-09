@@ -1,23 +1,20 @@
 import threading
-from datetime import datetime
-from typing import Any
 
+from typing import Any
 from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict, MutableList
-from sqlalchemy import create_engine, Column, Integer, String, Float, JSON, Table, \
-    ForeignKey, DateTime, func, Boolean, Text, LargeBinary
+from sqlalchemy import create_engine, Column, Integer, String, Float, JSON, ForeignKey, DateTime, func, Text
 
 import settings
 from manager import MODEL
-
-DATABASE = 'proxy_server'
+from apps.proxy import config
 
 engine = create_engine(
     f"mysql+mysqlconnector://{settings.config_map[MODEL].MYSQL_USER}:{settings.config_map[MODEL].MYSQL_PWD}"
     f"@{settings.config_map[MODEL].HOST}:{settings.config_map[MODEL].MYSQL_PORT}"
-    f"/{DATABASE}",
+    f"/{config.Proxy.DATABASE}",
     max_overflow=0,
     pool_size=300,
     pool_timeout=20,
@@ -26,18 +23,6 @@ engine = create_engine(
 
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
-
-rel_admin_role = Table(
-    'rel_admin_role', Base.metadata,
-    Column('admin_id', Integer, ForeignKey('admin.id')),
-    Column('role_id', Integer, ForeignKey('role.id'))
-)
-
-rel_role_perm = Table(
-    'rel_role_perm', Base.metadata,
-    Column('role_id', Integer, ForeignKey('role.id')),
-    Column('perm_id', Integer, ForeignKey('perm.id'))
-)
 
 protocol_map = {
     -1: '不可用',
@@ -83,79 +68,6 @@ class SessionManager:
             self.session.close()
 
 
-class Role(Base):
-    __tablename__ = 'role'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(32), unique=True, nullable=False)
-    slug = Column(String(32), unique=True, nullable=False)
-
-    admins = relationship('Admin', secondary=rel_admin_role, back_populates='roles')
-    perms = relationship('Perm', secondary=rel_role_perm, back_populates='roles')
-
-
-class Perm(Base):
-    __tablename__ = 'perm'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(32), unique=True, nullable=False)
-    slug = Column(String(32), unique=True, nullable=False)
-
-    roles = relationship('Role', secondary=rel_role_perm, back_populates='perms')
-
-
-class Admin(Base):
-    __tablename__ = 'admin'
-
-    id = Column(Integer, primary_key=True)
-    username = Column(String(128), unique=True, nullable=False)
-    password = Column(String(256), nullable=False)
-    active = Column(Boolean, default=True)
-    header = Column(LargeBinary, nullable=True)
-    auth_key = Column(String(256), default='')
-    birthday = Column(DateTime(timezone=True), nullable=True)
-    address = Column(String(128), nullable=True, default='')
-    phone = Column(String(128), nullable=True, default='')
-    email = Column(String(256), nullable=True, default='')
-    create_time = Column(DateTime(timezone=True), default=func.now())
-
-    roles = relationship('Role', secondary=rel_admin_role, back_populates='admins')
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
-
-    def get_perms(self):
-        perms = []
-        for role in self.roles:
-            for perm in role.perms:
-                perms.append((perm.slug, perm.name))
-        return list(set(perms))
-
-    def __repr__(self):
-        return f'{self.id}:{self.username}'
-
-
-class AdminLoginLog(Base):
-    __tablename__ = 'admin_login_log'
-
-    id = Column(Integer, primary_key=True)
-    ip = Column(String(32), default='127.0.0.1')
-    create_time = Column(DateTime(timezone=True), default=func.now())
-
-    admin_id = Column(Integer, ForeignKey('admin.id'))
-    # lazy=select, return all object,  lazy=dynamic, return query object
-    admin = relationship('Admin', backref=backref('logs', lazy='select'))
-
-
 class Message(Base):
     __tablename__ = 'message'
 
@@ -164,9 +76,6 @@ class Message(Base):
     content = Column(Text)
     status = Column(Integer, default=0)
     create_time = Column(DateTime(timezone=True), default=func.now())
-
-    admin_id = Column(Integer, ForeignKey('admin.id'))
-    admin = relationship('Admin', backref=backref('messages', lazy='select'))
 
 
 class Proxy(Base):
@@ -182,7 +91,7 @@ class Proxy(Base):
     # speed : -1, ip 不可用
     speed = Column(Float, default=-1)
     area = Column(String(255), default='')
-    score = Column(MutableDict.as_mutable(JSON), default={'score': 50, 'power': 0})
+    score = Column(MutableDict.as_mutable(JSON), default={'score': config.Proxy.MAX_SCORE, 'power': 0})
     # 代理 ip 的不可用域名列表
     disable_domain = Column(MutableList.as_mutable(JSON), default=[])
     origin = Column(String(128), default='')

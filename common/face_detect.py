@@ -28,20 +28,20 @@ class FaceDetect:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    def resize(self, size="200*200"):
-        try:
-            size = size.split("*")
-            w = size[0]
-            h = size[1]
-        except IndexError:
-            w = 200
-            h = 200
-            self.err_msg = "重置大小参数有误，使用默认参数！"
-
-        resized = cv2.resize(self.img, (int(w), int(h)), interpolation=cv2.INTER_CUBIC)
-        cv2.imwrite(self.upload_path, resized)
-
-        return resized
+    # def resize(self, size="200*200"):
+    #     try:
+    #         size = size.split("*")
+    #         w = size[0]
+    #         h = size[1]
+    #     except IndexError:
+    #         w = 200
+    #         h = 200
+    #         self.err_msg = "重置大小参数有误，使用默认参数！"
+    #
+    #     resized = cv2.resize(self.img, (int(w), int(h)), interpolation=cv2.INTER_CUBIC)
+    #     cv2.imwrite(self.upload_path, resized)
+    #
+    #     return resized
 
     def detect(self):
 
@@ -53,7 +53,7 @@ class FaceDetect:
         if len(face_areas) == 1:
             try:
                 (x, y, w, h) = face_areas[0]
-                face = self.img[y - 2: y + h + 2, x - 2: x + w + 2]
+                face = self.img[y: y + h, x: x + w]
                 # face = self.resize(face)
                 save_path = self.save_img(face)
 

@@ -1,7 +1,7 @@
 import threading
 
-from typing import Any
 from contextlib import contextmanager
+from typing import Any
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -9,12 +9,11 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, B
 
 import settings
 from manager import MODEL
-from apps.wechat_mp.config import MiniProgram
 
 engine = create_engine(
     f"mysql+mysqlconnector://{settings.config_map[MODEL].MYSQL_USER}:{settings.config_map[MODEL].MYSQL_PWD}"
     f"@{settings.config_map[MODEL].HOST}:{settings.config_map[MODEL].MYSQL_PORT}"
-    f"/{MiniProgram.DATABASE}",
+    f"/subscribe",
     max_overflow=0,
     pool_size=300,
     pool_timeout=20,

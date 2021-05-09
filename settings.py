@@ -17,12 +17,12 @@ class Config:
 
     MYSQL_PORT = 3306
     MYSQL_USER = 'root'
-    MYSQL_PWD = 'mincoroot_924'
+    MYSQL_PWD = 'mincoroot'
     DATABASE = None
 
     MQ_PORT = 5672
     MQ_USER = 'root'
-    MQ_PWD = 'mincoroot_924'
+    MQ_PWD = 'mincoroot'
 
     # Redis
     REDIS_PORT = 6379

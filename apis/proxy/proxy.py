@@ -13,9 +13,16 @@ def get_users():
     data = {}
     message = ''
 
+    from apps.common.user.models import Admin, AdminLoginLog, SessionManager as cmSessionManager
+    cmSession_manager = cmSessionManager()
+
+    with cmSession_manager.session_execute() as session:
+        admins = session.query(Admin).filter().all()
+        data['admins'] = [object_to_dict(admin) for admin in admins]
+
     with session_manager.session_execute() as session:
         proxies = session.query(Proxy).filter().all()
-        data = [object_to_dict(proxy) for proxy in proxies]
+        data['proxies'] = [object_to_dict(proxy) for proxy in proxies]
 
     res = {
         'code': code,
