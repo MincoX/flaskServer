@@ -32,58 +32,61 @@ def load_user(admin_id):
 @api_common.route('/')
 @api_common.route('/user_login', methods=['POST'])
 def login():
-    request_data = json.loads(request.data)
-
     res = {
         'code': 200,
         'data': None,
         'msg': 'success'
     }
 
-    with session_manager.session_execute() as session:
+    if request.method == "POST":
 
-        account = session.query(Admin).filter(Admin.username == request_data.get('username')).first()
-        if account:
-            if account.password == hashlib.md5(
-                    (request_data.get('password') + CommonUser.SECRET_KEY).encode()
-            ).hexdigest():
+        request_data = json.loads(request.data)
 
-                # 邮件提示
-                # common_task.mail_send.delay(
-                #     subject='vmodel',
-                #     sender='MincoX',
-                #     recipients=['903444601@qq.com'],
-                #     body=f'{request_data.get("username")} 用户登录！'
-                # )
+        with session_manager.session_execute() as session:
 
-                login_user(account)
-                print("current_user >>> ", current_user)
-                login_log = AdminLoginLog(
-                    admin_id=account.id,
-                    ip=request.environ.get('X-Real-IP', request.remote_addr),
-                    server_url=request.url,
-                    create_time=datetime.datetime.now(),
-                )
-                session.add(login_log)
-                session.commit()
-                session.close()
+            account = session.query(Admin).filter(Admin.username == request_data.get('username')).first()
+            if account:
+                if account.password == hashlib.md5(
+                        (request_data.get('password') + CommonUser.SECRET_KEY).encode()
+                ).hexdigest():
 
-                res['data'] = {'token': str(uuid.uuid4())}
+                    # 邮件提示
+                    # common_task.mail_send.delay(
+                    #     subject='vmodel',
+                    #     sender='MincoX',
+                    #     recipients=['903444601@qq.com'],
+                    #     body=f'{request_data.get("username")} 用户登录！'
+                    # )
 
-                return jsonify(res)
+                    login_user(account)
+                    print("current_user >>> ", current_user)
+                    login_log = AdminLoginLog(
+                        admin_id=account.id,
+                        ip=request.environ.get('X-Real-IP', request.remote_addr),
+                        server_url=request.url,
+                        create_time=datetime.datetime.now(),
+                    )
+                    session.add(login_log)
+                    session.commit()
+                    session.close()
 
+                    res['data'] = {'token': str(uuid.uuid4())}
+
+                    return jsonify(res)
+
+                else:
+                    res['code'], res['msg'] = 400, "用户名或密码错误"
+
+                    return jsonify(res)
             else:
-                res['code'], res['msg'] = 400, "用户名或密码错误"
+                res['code'], res['msg'] = 400, "用户不存在，请先注册"
 
                 return jsonify(res)
-        else:
-            res['code'], res['msg'] = 400, "用户不存在，请先注册"
 
-            return jsonify(res)
+    return jsonify(res)
 
 
 @api_common.route('/login_out', methods=['GET'])
-@login_required
 def login_out():
     logout_user()
 
@@ -97,10 +100,7 @@ def login_out():
 
 
 @api_common.route('/test', methods=['GET'])
-@login_required
 def test():
-    print("current_user >>> ", current_user)
-
     res = {
         'code': 200,
         'data': None,
