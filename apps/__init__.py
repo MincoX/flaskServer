@@ -26,8 +26,6 @@ def create_app(config_name):
     global login_manager
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = "common.login"
-    login_manager.refresh_view = "common.login"
 
     app.config['JSON_AS_ASCII'] = False
 
