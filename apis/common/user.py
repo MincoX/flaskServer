@@ -49,12 +49,12 @@ def login():
             ).hexdigest():
 
                 # 邮件提示
-                # common_task.mail_send.delay(
-                #     subject='vmodel',
-                #     sender='MincoX',
-                #     recipients=['903444601@qq.com'],
-                #     body=f'{request_data.get("username")} 用户登录！'
-                # )
+                common_task.mail_send.delay(
+                    subject='vmodel',
+                    sender='MincoX',
+                    recipients=['903444601@qq.com'],
+                    body=f'{request_data.get("username")} 用户登录！'
+                )
 
                 login_user(account)
                 print("current_user >>> ", current_user)
