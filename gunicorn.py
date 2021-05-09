@@ -31,3 +31,4 @@ accesslog = '/usr/src/flaskServer/gunicorn_acess.log'
 errorlog = '/usr/src/flaskServer/gunicorn_error.log'
 
 # 设置日志等级
+loglevel = 'info'
