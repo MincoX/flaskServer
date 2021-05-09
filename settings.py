@@ -50,7 +50,7 @@ class Product(Config):
     """
     DEBUG = False
     SERVER_HOST = '0.0.0.0'
-    PORT = 5000
+    PORT = 10002
 
 
 config_map = {
