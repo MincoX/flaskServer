@@ -2,4 +2,4 @@
 
 celery -A celery_app worker -l info &
 
-gunicorn -c /usr/src/flaskProxy/gunicorn.py manager:app
+gunicorn -c /usr/src/flaskServer/gunicorn.py manager:app
