@@ -1,35 +1,34 @@
 import logging
 import traceback
 
-from apps.wechat.models import Session
 
 
-class Service:
-
-    def __init__(self, session):
-        self.session = session
-
-
-class ApiService:
-
-    def __init__(self, func):
-        self.session = Session()
-        self.func = func
-
-    def func_decorate(self, *args, **kwargs):
-        try:
-            service = Service(self.session)
-            return self.func(service, *args, **kwargs)
-
-        except Exception as e:
-            print(e)
-            logging.error(traceback.format_exc(limit=None))
-
-        finally:
-            self.session.close()
-
-    def __call__(self, *args, **kwargs):
-        return self.func_decorate(*args, **kwargs)
+# class Service:
+#
+#     def __init__(self, session):
+#         self.session = session
+#
+#
+# class ApiService:
+#
+#     def __init__(self, func):
+#         self.session = Session()
+#         self.func = func
+#
+#     def func_decorate(self, *args, **kwargs):
+#         try:
+#             service = Service(self.session)
+#             return self.func(service, *args, **kwargs)
+#
+#         except Exception as e:
+#             print(e)
+#             logging.error(traceback.format_exc(limit=None))
+#
+#         finally:
+#             self.session.close()
+#
+#     def __call__(self, *args, **kwargs):
+#         return self.func_decorate(*args, **kwargs)
 
 
 # def check_perms(session, perms):

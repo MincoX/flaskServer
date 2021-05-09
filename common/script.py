@@ -1,6 +1,6 @@
 from flask_script import Command
 
-from apps.wechat.models import init_db, drop_db
+from apps.common.user.models import init_db, drop_db
 
 
 class InitDB(Command):
