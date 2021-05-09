@@ -12,28 +12,19 @@ services:
     container_name: flask_server_api
 
     ports:
-      - "10000:5000"
+      - "10002:5000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./:/usr/src/flaskServer
 
-    command: gunicorn -c /usr/src/flaskServer/gunicorn.py manager:app
-
-  celery:
-    image: flask_server
-    restart: always
-    container_name: flask_server_celery
-
-    command: celery -A celery_app worker -l info
-
-  RabbitMq:
-    image: flask_server
-    restart: always
-    container_name: flask_server_RabbitMq
-
-    command:
-      - /bin/bash
-      - -c
-      - |
-        export PYTHONPATH=/usr/src/flaskServer
-        python rabbitmq/consumer_retry.py
+#  RabbitMq:
+#    image: flask_server
+#    restart: always
+#    container_name: flask_server_RabbitMq
+#
+#    command:
+#      - /bin/bash
+#      - -c
+#      - |
+#        export PYTHONPATH=/usr/src/flaskServer
+#        python rabbitmq/consumer_retry.py
