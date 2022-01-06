@@ -2,7 +2,7 @@ amqp==2.6.0
 billiard==3.6.3.0
 blinker==1.4
 cachelib==0.1
-celery==4.4.4
+celery==5.2.2
 certifi==2020.4.5.1
 cffi==1.14.4
 chardet==3.0.4
