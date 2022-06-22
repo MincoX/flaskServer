@@ -29,7 +29,7 @@ kombu==4.6.10
 MarkupSafe==1.1.1
 monotonic==1.5
 mysql-connector-python-rf==2.2.2
-numpy==1.19.5
+numpy==1.22.0
 opencv-python==4.5.1.48
 pika==1.1.0
 pycparser==2.20
